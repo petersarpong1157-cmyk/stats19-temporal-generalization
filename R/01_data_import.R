@@ -10,8 +10,15 @@ read_stats19 <- function(record_type, year) {
 
   message("Reading ", basename(path))
 
+  # Force the shared record identifiers to character in every source file.
+  # The 2024 collision_index field contains values that can otherwise be
+  # inferred inconsistently across readers/files.
   readr::read_csv(
     path,
+    col_types = readr::cols(
+      collision_index = readr::col_character(),
+      collision_ref_no = readr::col_character()
+    ),
     show_col_types = FALSE,
     progress = FALSE
   )
@@ -30,7 +37,7 @@ require_columns(
   c(
     "collision_index", "number_of_vehicles", "date", "day_of_week",
     "time", "road_type", "speed_limit", "junction_detail",
-    "junction_control", "pedestrian_crossing_physical_facilities",
+    "junction_control", "pedestrian_crossing",
     "light_conditions", "weather_conditions",
     "road_surface_conditions", "urban_or_rural_area"
   ),
@@ -42,7 +49,7 @@ require_columns(
   c(
     "collision_index", "number_of_vehicles", "date", "day_of_week",
     "time", "road_type", "speed_limit", "junction_detail",
-    "junction_control", "pedestrian_crossing_physical_facilities",
+    "junction_control", "pedestrian_crossing",
     "light_conditions", "weather_conditions",
     "road_surface_conditions", "urban_or_rural_area"
   ),
