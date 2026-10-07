@@ -1,0 +1,30 @@
+# R
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+
+# Raw and derived data
+data/raw/*
+!data/raw/.gitkeep
+data/derived/*
+!data/derived/.gitkeep
+
+# Trained model binaries
+models/*
+!models/.gitkeep
+
+# Temporary files
+*.tmp
+*.log
+~$*
+.DS_Store
+Thumbs.db
+
+# Local manuscript drafts
+manuscript/*.docx
+manuscript/*.pdf
+
+# R package caches
+renv/library/
+renv/staging/
