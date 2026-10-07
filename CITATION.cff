@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this code or analysis workflow, please cite this repository and the associated manuscript when available."
+title: "Temporal Generalization, Calibration, and Road-User Heterogeneity in STATS19 Injury-Severity Models"
+type: software
+authors:
+  - family-names: "Sarpong"
+    given-names: "Peter"
+repository-code: "https://github.com/petersarpong1157-cmyk/stats19-temporal-generalization"
+version: "0.1.0"
+date-released: "2026-10-07"
+keywords:
+  - road safety
+  - STATS19
+  - injury severity
+  - machine learning
+  - temporal validation
+  - XGBoost
+  - SHAP
+  - calibration
