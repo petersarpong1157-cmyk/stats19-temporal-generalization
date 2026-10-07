@@ -20,7 +20,7 @@ How accurately can statistical and machine-learning models classify KSI outcomes
 - **Interpretability:** grouped SHAP analysis
 - **Heterogeneity:** casualty class, age, speed-limit environment, road type, urban/rural context, and road-user-specific SHAP structure
 
-The 2025 data are kept completely out of model development, hyperparameter selection, and threshold selection.
+The 2025 data are kept out of model fitting, hyperparameter selection, and probability-threshold selection. Schema and data-availability checks are documented separately in `AUDIT.md`.
 
 ## Verified headline results
 
@@ -38,6 +38,9 @@ These results are predictive, not causal.
 
 ```text
 .
+├── .github/
+│   └── workflows/
+│       └── r-syntax.yml
 ├── R/
 │   ├── 00_setup.R
 │   ├── 01_data_import.R
@@ -48,16 +51,23 @@ These results are predictive, not causal.
 │   ├── 06_subgroup_analysis.R
 │   ├── 07_shap_analysis.R
 │   ├── 08_bootstrap_uncertainty.R
-│   └── 09_final_tables_figures.R
+│   ├── 09_final_tables_figures.R
+│   └── run_all.R
 ├── data/
+│   ├── raw/
+│   ├── derived/
 │   └── README.md
 ├── manuscript/
 │   └── README.md
+├── models/
 ├── outputs/
+│   ├── tables/
+│   ├── figures/
 │   └── README.md
 ├── session/
 │   └── README.md
 ├── .gitignore
+├── AUDIT.md
 ├── CITATION.cff
 └── stats19-temporal-generalization.Rproj
 ```
@@ -68,13 +78,19 @@ Raw STATS19 files are **not redistributed in this repository**. Download the fin
 
 https://www.gov.uk/government/statistical-data-sets/road-safety-open-data
 
-Place the six CSV files in `data/raw/`. The import script identifies files by year and record type, so exact downloaded filenames can be retained.
+Place the six CSV files in `data/raw/`. The import script identifies files by year and record type, so the downloaded filenames can be retained.
 
-The official road-safety open-dataset data guide should be used for categorical labels.
+The official 2025 road-safety open-dataset data guide is used for categorical labels. A coding inconsistency involving casualty-type codes 23 and 33, and the rule used in this analysis, are documented in `AUDIT.md`.
 
 ## Reproducibility
 
-Run the scripts in numerical order from the repository root:
+The simplest route is:
+
+```r
+source("R/run_all.R")
+```
+
+Alternatively, run the numbered scripts in order:
 
 ```r
 source("R/00_setup.R")
@@ -89,7 +105,17 @@ source("R/08_bootstrap_uncertainty.R")
 source("R/09_final_tables_figures.R")
 ```
 
-Model fitting and the collision-level bootstrap can take substantial time.
+Model fitting, SHAP calculation, and the collision-level bootstrap can take substantial time.
+
+For a final release, run the entire workflow from a clean R session and compare `outputs/tables/Manuscript_Numerical_Audit.csv` with the manuscript.
+
+## Reproducibility audit
+
+The source CSV schemas, record counts, linkage keys, outcome counts, temporal category compatibility, and selected data-guide coding decisions have been checked against the exact files used to develop the manuscript.
+
+See **[AUDIT.md](AUDIT.md)** for the audit record.
+
+The audit found and corrected one repository schema error before release preparation: the current 2024/2025 collision files use `pedestrian_crossing`, not `pedestrian_crossing_physical_facilities`. The import now also forces `collision_index` to character to avoid inconsistent key inference across readers.
 
 ## Important interpretation notes
 
@@ -98,6 +124,10 @@ Model fitting and the collision-level bootstrap can take substantial time.
 3. The model predicts severity **conditional on a casualty being present in STATS19**. It does not estimate exposure-adjusted crash risk or crash occurrence.
 4. SHAP values describe the fitted prediction model and must not be interpreted as causal effects.
 5. Collision-level descriptive KSI proportions are unadjusted comparisons.
+
+## Continuous checks
+
+A GitHub Actions workflow parses every R script after code changes. This is a syntax check, not a substitute for the full data-dependent reproducibility run.
 
 ## Citation
 
