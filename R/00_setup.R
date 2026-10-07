@@ -60,15 +60,37 @@ find_stats19_file <- function(record_type, year) {
     ignore.case = TRUE
   )
 
-  type_match <- grepl(record_type, basename(csvs), ignore.case = TRUE)
-  year_match <- grepl(as.character(year), basename(csvs), fixed = TRUE)
+  if (!record_type %in% c("collision", "vehicle", "casualty")) {
+    stop(
+      "record_type must be one of: collision, vehicle, casualty."
+    )
+  }
 
-  hits <- csvs[type_match & year_match]
+  # Match the record type only in the final filename component.
+  # Every DfT filename begins with 'dft-road-casualty-statistics-',
+  # so a broad grepl('casualty', filename) incorrectly matches all files.
+  expected_pattern <- paste0(
+    "statistics-",
+    record_type,
+    "-",
+    year,
+    "\\.csv$"
+  )
+
+  hits <- csvs[
+    grepl(
+      expected_pattern,
+      basename(csvs),
+      ignore.case = TRUE
+    )
+  ]
 
   if (length(hits) != 1) {
     stop(
       "Expected exactly one ", record_type, " CSV for ", year,
-      " in ", data_raw_dir, "; found ", length(hits), "."
+      " in ", data_raw_dir, "; found ", length(hits),
+      ". Files present: ",
+      paste(basename(csvs), collapse = ", ")
     )
   }
 
