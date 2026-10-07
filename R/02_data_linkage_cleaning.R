@@ -15,7 +15,7 @@ collision_vars <- c(
   "speed_limit",
   "junction_detail",
   "junction_control",
-  "pedestrian_crossing_physical_facilities",
+  "pedestrian_crossing",
   "light_conditions",
   "weather_conditions",
   "road_surface_conditions",
