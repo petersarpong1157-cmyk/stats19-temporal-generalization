@@ -15,7 +15,10 @@ This repository was audited against the six official STATS19 CSV files used in t
 
 The source headers were checked directly against the import and linkage scripts.
 
-A schema mismatch was found during the audit: the public collision files contain `pedestrian_crossing`, not `pedestrian_crossing_physical_facilities`. The import and linkage scripts were corrected accordingly.
+Two repository issues were identified and corrected during the audit:
+
+1. the public collision files contain `pedestrian_crossing`, not `pedestrian_crossing_physical_facilities`;
+2. the original file-discovery helper matched the substring `casualty` too broadly because every DfT filename begins with `dft-road-casualty-statistics-`. The helper now matches the record type at the end of the filename.
 
 `collision_index` is now forced to character during import so that linkage is stable across readers and across all six files.
 
@@ -26,6 +29,38 @@ With linkage keys treated consistently:
 - `collision_index + casualty_reference` is unique in each casualty file;
 - no casualty record is unmatched to its collision;
 - no casualty record is unmatched to its associated vehicle.
+
+## Clean-run verification completed so far
+
+A clean local checkout of the public repository has now successfully executed:
+
+- `R/00_setup.R`
+- `R/01_data_import.R`
+- `R/02_data_linkage_cleaning.R`
+
+against fresh copies of the six source CSV files placed in `data/raw/`.
+
+The clean run reproduced the expected source dimensions exactly:
+
+| Year | Record type | Rows |
+|---|---|---:|
+| 2024 | Collision | 100,927 |
+| 2024 | Vehicle | 183,514 |
+| 2024 | Casualty | 128,272 |
+| 2025 | Collision | 101,525 |
+| 2025 | Vehicle | 183,948 |
+| 2025 | Casualty | 127,883 |
+
+The linkage/feature-construction stage also reproduced:
+
+- 2024 casualties: 128,272
+- 2024 recorded KSI: 27,642
+- 2024 recorded KSI prevalence: approximately 0.215
+- 2025 casualties: 127,883
+- 2025 recorded KSI: 29,296
+- 2025 recorded KSI prevalence: approximately 0.229
+
+This verifies the public repository through data import, linkage, outcome construction, and primary feature preparation. The modelling, SHAP, bootstrap, and final-output stages still require clean-run verification before a release is tagged.
 
 ## Outcome checks
 
@@ -89,7 +124,9 @@ Codes 6 (Oil or diesel) and 7 (Mud) are absent from both the 2024 and 2025 colli
 
 The repository includes a GitHub Actions syntax-check workflow and a complete `R/run_all.R` driver.
 
-The remaining reproducibility step is an end-to-end execution from a clean R session using freshly downloaded copies of the six source CSV files. Final release status should not be assigned until that clean run reproduces the manuscript audit values.
+The import and linkage stages have now passed a clean-run test. The remaining reproducibility work is to execute the descriptive, model-development, temporal-validation, subgroup, SHAP, bootstrap, and final-output scripts from the same clean checkout and confirm that they reproduce the manuscript audit values.
+
+Final release status should not be assigned until that full clean run succeeds.
 
 ## Audit principle
 
