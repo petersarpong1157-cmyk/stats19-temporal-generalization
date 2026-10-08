@@ -1,6 +1,7 @@
 # Temporal Generalization, Calibration, and Road-User Heterogeneity in STATS19 Injury-Severity Models
 
 [![R syntax check](https://github.com/petersarpong1157-cmyk/stats19-temporal-generalization/actions/workflows/r-syntax.yml/badge.svg)](https://github.com/petersarpong1157-cmyk/stats19-temporal-generalization/actions/workflows/r-syntax.yml)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23240708.svg)](https://doi.org/10.5281/zenodo.23240708)
 
 Reproducible R analysis for a manuscript studying casualty-level killed-or-seriously-injured (KSI) prediction in Great Britain using final 2024 and 2025 Department for Transport STATS19 data.
 
@@ -133,7 +134,9 @@ A GitHub Actions workflow parses every R script after code changes. This is a sy
 
 ## Citation
 
-Citation metadata are provided in `CITATION.cff`. A DOI will be added only if the repository is archived in a DOI-issuing service.
+The archived **v3.2.6** release is available on Zenodo with DOI **10.5281/zenodo.23240708**.
+
+Citation metadata are provided in `CITATION.cff`.
 
 ## Manuscript status
 
@@ -144,6 +147,8 @@ Manuscript in preparation. The working manuscript will remain private and is int
 The verified public code and selected publication artifacts were released as **v3.2.6** on 2026-10-08.
 
 GitHub release: https://github.com/petersarpong1157-cmyk/stats19-temporal-generalization/releases/tag/v3.2.6
+
+Zenodo DOI: https://doi.org/10.5281/zenodo.23240708
 
 ## License
 
