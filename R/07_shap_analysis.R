@@ -27,9 +27,9 @@ ctrl_grouped <- readRDS(
 )
 
 test25 <- model25 %>%
-  select(
+  dplyr::select(
     KSI,
-    all_of(primary_predictors)
+    dplyr::all_of(primary_predictors)
   )
 
 # ---- Reconstruct exact 2025 XGBoost matrix ---------------------------------
@@ -170,12 +170,12 @@ conceptual_shap <- cbind(
     grouped_shap_signed[, "month_cos"]
 )
 
-grouped_shap_final <- tibble(
+grouped_shap_final <- tibble::tibble::tibble(
   Variable = colnames(conceptual_shap),
   Mean_Absolute_SHAP =
     colMeans(abs(conceptual_shap))
 ) %>%
-  arrange(desc(Mean_Absolute_SHAP))
+  dplyr::arrange(dplyr::desc(Mean_Absolute_SHAP))
 
 print(
   grouped_shap_final,
@@ -232,7 +232,7 @@ age_band_labels <- c(
   "11" = "Over 75"
 )
 
-casualty_type_shap <- tibble(
+casualty_type_shap <- tibble::tibble(
   casualty_type =
     as.character(
       shap_sample_data$casualty_type
@@ -242,8 +242,8 @@ casualty_type_shap <- tibble(
   SHAP =
     conceptual_shap[, "casualty_type"]
 ) %>%
-  group_by(casualty_type) %>%
-  summarise(
+  dplyr::group_by(casualty_type) %>%
+  dplyr::summarise(
     SHAP_Sample_N = n(),
     Mean_SHAP = mean(SHAP),
     Mean_Absolute_SHAP = mean(abs(SHAP)),
@@ -251,12 +251,12 @@ casualty_type_shap <- tibble(
   )
 
 casualty_type_full_2025 <- model25 %>%
-  mutate(
+  dplyr::mutate(
     casualty_type =
       as.character(casualty_type)
   ) %>%
-  group_by(casualty_type) %>%
-  summarise(
+  dplyr::group_by(casualty_type) %>%
+  dplyr::summarise(
     N_2025 = n(),
     KSI_N_2025 = sum(KSI_num == 1),
     KSI_Rate_2025 = mean(KSI_num),
@@ -264,21 +264,21 @@ casualty_type_full_2025 <- model25 %>%
   )
 
 casualty_type_final <- casualty_type_shap %>%
-  left_join(
+  dplyr::left_join(
     casualty_type_full_2025,
     by = "casualty_type"
   ) %>%
-  mutate(
+  dplyr::mutate(
     Casualty_Type_Label =
       unname(
         casualty_type_labels[casualty_type]
       )
   ) %>%
-  arrange(desc(Mean_SHAP))
+  dplyr::arrange(desc(Mean_SHAP))
 
 casualty_type_publication <- casualty_type_final %>%
-  filter(N_2025 >= 500) %>%
-  transmute(
+  dplyr::filter(N_2025 >= 500) %>%
+  dplyr::transmute(
     Casualty_Type = Casualty_Type_Label,
     N = N_2025,
     KSI = KSI_N_2025,
@@ -290,7 +290,7 @@ casualty_type_publication <- casualty_type_final %>%
       round(Mean_Absolute_SHAP, 3)
   )
 
-age_shap <- tibble(
+age_shap <- tibble::tibble(
   age_band =
     as.character(
       shap_sample_data$age_band_of_casualty
@@ -301,20 +301,20 @@ age_shap <- tibble(
       "age_band_of_casualty"
     ]
 ) %>%
-  group_by(age_band) %>%
-  summarise(
+  dplyr::group_by(age_band) %>%
+  dplyr::summarise(
     Mean_SHAP = mean(SHAP),
     Mean_Absolute_SHAP = mean(abs(SHAP)),
     .groups = "drop"
   )
 
 age_full_2025 <- model25 %>%
-  mutate(
+  dplyr::mutate(
     age_band =
       as.character(age_band_of_casualty)
   ) %>%
-  group_by(age_band) %>%
-  summarise(
+  dplyr::group_by(age_band) %>%
+  dplyr::summarise(
     N_2025 = n(),
     KSI_N_2025 = sum(KSI_num == 1),
     KSI_Rate_2025 = mean(KSI_num),
@@ -322,16 +322,16 @@ age_full_2025 <- model25 %>%
   )
 
 age_publication <- age_shap %>%
-  left_join(
+  dplyr::left_join(
     age_full_2025,
     by = "age_band"
   ) %>%
-  mutate(
+  dplyr::mutate(
     Age_Band =
       unname(age_band_labels[age_band])
   ) %>%
-  arrange(as.numeric(age_band)) %>%
-  transmute(
+  dplyr::arrange(as.numeric(age_band)) %>%
+  dplyr::transmute(
     Age_Band,
     N = N_2025,
     KSI = KSI_N_2025,
@@ -343,7 +343,7 @@ age_publication <- age_shap %>%
       round(Mean_Absolute_SHAP, 3)
   )
 
-speed_shap <- tibble(
+speed_shap <- tibble::tibble(
   speed_limit =
     as.character(
       shap_sample_data$speed_limit
@@ -353,15 +353,15 @@ speed_shap <- tibble(
   SHAP =
     conceptual_shap[, "speed_limit"]
 ) %>%
-  group_by(speed_limit) %>%
-  summarise(
+  dplyr::group_by(speed_limit) %>%
+  dplyr::summarise(
     SHAP_Sample_N = n(),
     KSI_Rate_SHAP_Sample = mean(KSI_num),
     Mean_SHAP = mean(SHAP),
     Mean_Absolute_SHAP = mean(abs(SHAP)),
     .groups = "drop"
   ) %>%
-  arrange(as.numeric(speed_limit))
+  dplyr::arrange(as.numeric(speed_limit))
 
 # ---- SHAP within casualty class --------------------------------------------
 
@@ -400,7 +400,7 @@ within_group_shap <- lapply(
       )
     }
 
-    tibble(
+    tibble::tibble(
       Casualty_Class =
         unname(class_labels[g]),
       Variable = varying_vars,
@@ -420,15 +420,15 @@ within_group_shap <- lapply(
       mutate(Rank = row_number())
   }
 ) %>%
-  bind_rows()
+  dplyr::bind_rows()
 
 top_within_group <- within_group_shap %>%
-  group_by(Casualty_Class) %>%
+  dplyr::group_by(Casualty_Class) %>%
   slice_min(
     order_by = Rank,
     n = 8
   ) %>%
-  ungroup()
+  dplyr::ungroup()
 
 # ---- Robustness: remove casualty_type ---------------------------------------
 
@@ -438,20 +438,36 @@ reduced_predictors <- setdiff(
 )
 
 reduced24 <- model24 %>%
-  select(
+  dplyr::select(
     KSI,
-    all_of(reduced_predictors)
+    dplyr::all_of(reduced_predictors)
   )
 
 reduced25 <- model25 %>%
-  select(
+  dplyr::select(
     KSI,
-    all_of(reduced_predictors)
+    dplyr::all_of(reduced_predictors)
   )
 
 set.seed(20261006)
 
-xgb_reduced <- train(
+# Save the primary SHAP products before the robustness refit so that a later
+# model-fitting/reporting error does not discard the expensive SHAP calculation.
+saveRDS(
+  grouped_shap_final,
+  file.path(data_derived_dir, "Grouped_SHAP_2025.rds")
+)
+
+saveRDS(
+  list(
+    shap_indices = shap_indices,
+    conceptual_shap = conceptual_shap,
+    within_group_shap = within_group_shap
+  ),
+  file.path(data_derived_dir, "SHAP_Derived_2025.rds")
+)
+
+xgb_reduced <- caret::train(
   KSI ~ .,
   data = reduced24,
   method = "xgbTree",
@@ -467,7 +483,7 @@ reduced_prob_2025 <- predict(
   type = "prob"
 )[, "KSI"]
 
-reduced_results <- tibble(
+reduced_results <- tibble::tibble(
   Model = "XGBoost without casualty_type",
   CV_ROC_2024 =
     xgb_reduced$results$ROC[[1]],
