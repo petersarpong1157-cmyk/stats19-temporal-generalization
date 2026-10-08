@@ -219,6 +219,22 @@ At the same locked 2024 threshold, the clean run reproduced:
 
 These are descriptive predictive-performance differences across road-user groups and are not labeled as causal effects or fairness/bias findings.
 
+## Clean-run SHAP and robustness verification
+
+The corrected clean pipeline reproduced the grouped SHAP and sensitivity-analysis results.
+
+Global grouped mean absolute SHAP values reproduced the expected ranking, led by:
+- casualty_type ≈ 0.430;
+- number_of_vehicles ≈ 0.184;
+- age_band_of_casualty ≈ 0.173;
+- speed_limit ≈ 0.166;
+- road_type ≈ 0.128;
+- time_of_day ≈ 0.117.
+
+The within-road-user SHAP summaries also reproduced. For pedestrians, the leading grouped contributions were number_of_vehicles ≈ 0.213, age_band_of_casualty ≈ 0.211, sex_of_driver ≈ 0.189, speed_limit ≈ 0.162, and time_of_day ≈ 0.111.
+
+The XGBoost sensitivity model excluding casualty_type remained essentially unchanged in discrimination and probability accuracy (2024 CV ROC-AUC ≈ 0.705; 2025 ROC-AUC ≈ 0.702; PR-AUC ≈ 0.420; Brier ≈ 0.159), supporting the interpretation that casualty_type is globally important but substantially redundant with other road-user and vehicle predictors.
+
 ## Audit principle
 
 This audit documents source-file structure, linkage behavior, coding decisions, and known data-quality constraints. It does not convert predictive or SHAP results into causal claims.
