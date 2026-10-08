@@ -25,7 +25,7 @@ The analysis workflow has passed a full end-to-end clean run. This file tracks t
 
 - [x] Choose a repository license: MIT License.
 - [x] Decide whether selected generated tables/figures should be committed: yes.
-- [ ] Commit exact selected PNG outputs from the verified clean run (Figure 1, Figure 6, Figure 8, Figure 9).
+- [x] Commit exact selected PNG outputs from the verified clean run (Figure 1, Figure 6, Figure 8, Figure 9).
 - [ ] Decide whether the working manuscript should remain private or be included.
 - [ ] Optionally generate `renv.lock` from the verified local R environment.
 - [ ] Choose a release version/tag, for example `v1.0.0`.
