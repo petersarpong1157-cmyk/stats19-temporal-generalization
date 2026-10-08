@@ -182,6 +182,25 @@ The underlying observations and category frequencies were identical. However, th
 
 `R/02_data_linkage_cleaning.R` now declares the original level ordering explicitly for these four predictors. A fresh refit is required to verify that the archived OOF probabilities and threshold are recovered.
 
+## Clean-refit resolution
+
+After explicitly restoring the original lexicographic factor-level ordering for `age_band_of_casualty`, `casualty_type`, `vehicle_type`, and `age_band_of_driver`, a fresh clean refit reproduced the manuscript operating-point behavior.
+
+The corrected clean run reproduced:
+
+- the same selected XGBoost hyperparameters;
+- grouped-CV ROC-AUC ≈ 0.706;
+- 2025 XGBoost ROC-AUC ≈ 0.702;
+- 2025 PR-AUC ≈ 0.422;
+- 2025 Brier score ≈ 0.159;
+- calibration intercept ≈ 0.0566;
+- calibration slope ≈ 1.01;
+- OOF Youden threshold displayed as 0.219 (the manuscript threshold is 0.2185747);
+- 2025 confusion matrix at the locked threshold: TP = 19,156, TN = 62,549, FP = 36,038, FN = 10,140;
+- 2025 sensitivity ≈ 0.654 and specificity ≈ 0.634.
+
+This confirms that the earlier threshold discrepancy came from categorical level ordering in the reconstructed pipeline, not from the source data, grouped folds, caret seeds, selected hyperparameters, or recorded package versions.
+
 ## Audit principle
 
 This audit documents source-file structure, linkage behavior, coding decisions, and known data-quality constraints. It does not convert predictive or SHAP results into causal claims.
