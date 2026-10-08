@@ -1,0 +1,22 @@
+Quantity,Value
+2024 casualties,128272
+2025 casualties,127883
+2024 recorded KSI,27642
+2025 recorded KSI,29296
+2024 recorded KSI prevalence,0.21549520
+2025 recorded KSI prevalence,0.22908440
+2025 collisions,101525
+2025 KSI collisions,26644
+2025 KSI-collision percentage,26.243782
+XGBoost 2024 grouped CV ROC,0.70559265
+XGBoost 2025 ROC,0.70192661
+XGBoost 2025 PR-AUC,0.42174420
+XGBoost 2025 Brier,0.15917844
+XGBoost calibration intercept,0.056578325
+XGBoost calibration slope,1.0119602
+Locked threshold,0.21857471
+2025 threshold sensitivity,0.65387766
+2025 threshold specificity,0.63445485
+2025 threshold precision,0.34706671
+2025 threshold NPV,0.86050159
+2025 balanced accuracy,0.64416625
