@@ -37,7 +37,7 @@ threshold_metrics_2025 <- temporal_results$threshold_metrics_2025
 # ---- Bootstrap intervals for individual model metrics -----------------------
 
 metric_ci <- function(x) {
-  tibble(
+  tibble::tibble(
     Bootstrap_Mean = mean(x),
     Lower_95 = quantile(
       x,
@@ -52,11 +52,11 @@ metric_ci <- function(x) {
   )
 }
 
-performance_ci <- bind_rows(
+performance_ci <- dplyr::bind_rows(
   metric_ci(
     bootstrap_results$Logistic_ROC
   ) %>%
-    mutate(
+    dplyr::mutate(
       Model = "Logistic regression",
       Metric = "ROC-AUC"
     ),
@@ -64,7 +64,7 @@ performance_ci <- bind_rows(
   metric_ci(
     bootstrap_results$RF_ROC
   ) %>%
-    mutate(
+    dplyr::mutate(
       Model = "Random Forest",
       Metric = "ROC-AUC"
     ),
@@ -72,7 +72,7 @@ performance_ci <- bind_rows(
   metric_ci(
     bootstrap_results$XGB_ROC
   ) %>%
-    mutate(
+    dplyr::mutate(
       Model = "XGBoost",
       Metric = "ROC-AUC"
     ),
@@ -80,7 +80,7 @@ performance_ci <- bind_rows(
   metric_ci(
     bootstrap_results$Logistic_PR
   ) %>%
-    mutate(
+    dplyr::mutate(
       Model = "Logistic regression",
       Metric = "PR-AUC"
     ),
@@ -88,7 +88,7 @@ performance_ci <- bind_rows(
   metric_ci(
     bootstrap_results$RF_PR
   ) %>%
-    mutate(
+    dplyr::mutate(
       Model = "Random Forest",
       Metric = "PR-AUC"
     ),
@@ -96,7 +96,7 @@ performance_ci <- bind_rows(
   metric_ci(
     bootstrap_results$XGB_PR
   ) %>%
-    mutate(
+    dplyr::mutate(
       Model = "XGBoost",
       Metric = "PR-AUC"
     ),
@@ -104,7 +104,7 @@ performance_ci <- bind_rows(
   metric_ci(
     bootstrap_results$Logistic_Brier
   ) %>%
-    mutate(
+    dplyr::mutate(
       Model = "Logistic regression",
       Metric = "Brier score"
     ),
@@ -112,7 +112,7 @@ performance_ci <- bind_rows(
   metric_ci(
     bootstrap_results$RF_Brier
   ) %>%
-    mutate(
+    dplyr::mutate(
       Model = "Random Forest",
       Metric = "Brier score"
     ),
@@ -120,12 +120,12 @@ performance_ci <- bind_rows(
   metric_ci(
     bootstrap_results$XGB_Brier
   ) %>%
-    mutate(
+    dplyr::mutate(
       Model = "XGBoost",
       Metric = "Brier score"
     )
 ) %>%
-  mutate(
+  dplyr::mutate(
     Model = factor(
       Model,
       levels = c(
@@ -144,37 +144,37 @@ print(
 # ---- Final model-performance table -----------------------------------------
 
 roc_ci <- performance_ci %>%
-  filter(Metric == "ROC-AUC") %>%
-  select(
+  dplyr::filter(Metric == "ROC-AUC") %>%
+  dplyr::select(
     Model,
     ROC_Lower_95 = Lower_95,
     ROC_Upper_95 = Upper_95
   )
 
 pr_ci <- performance_ci %>%
-  filter(Metric == "PR-AUC") %>%
-  select(
+  dplyr::filter(Metric == "PR-AUC") %>%
+  dplyr::select(
     Model,
     PR_Lower_95 = Lower_95,
     PR_Upper_95 = Upper_95
   )
 
 brier_ci <- performance_ci %>%
-  filter(Metric == "Brier score") %>%
-  select(
+  dplyr::filter(Metric == "Brier score") %>%
+  dplyr::select(
     Model,
     Brier_Lower_95 = Lower_95,
     Brier_Upper_95 = Upper_95
   )
 
 final_model_table <- test_performance %>%
-  select(
+  dplyr::select(
     Model,
     Test_ROC_2025 = ROC_AUC,
     Test_PR_AUC_2025 = PR_AUC,
     Brier_2025 = Brier
   ) %>%
-  left_join(
+  dplyr::left_join(
     cv_performance %>%
       select(
         Model,
@@ -182,19 +182,19 @@ final_model_table <- test_performance %>%
       ),
     by = "Model"
   ) %>%
-  left_join(
+  dplyr::left_join(
     roc_ci,
     by = "Model"
   ) %>%
-  left_join(
+  dplyr::left_join(
     pr_ci,
     by = "Model"
   ) %>%
-  left_join(
+  dplyr::left_join(
     brier_ci,
     by = "Model"
   ) %>%
-  select(
+  dplyr::select(
     Model,
     CV_ROC_2024,
     Test_ROC_2025,
@@ -356,27 +356,28 @@ ggsave(
 
 # ---- Figure 6: temporal-test performance with bootstrap uncertainty ---------
 
-figure6 <- ggplot(
+figure6 <- ggplot2::ggplot(
   performance_ci,
-  aes(
+  ggplot2::aes(
     x = Bootstrap_Mean,
     y = Model
   )
 ) +
-  geom_errorbarh(
-    aes(
+  ggplot2::geom_errorbar(
+    ggplot2::aes(
       xmin = Lower_95,
       xmax = Upper_95
     ),
-    height = 0.15
+    orientation = "y",
+    width = 0.15
   ) +
-  geom_point(size = 3) +
-  facet_wrap(
+  ggplot2::geom_point(size = 3) +
+  ggplot2::facet_wrap(
     ~ Metric,
     scales = "free_x",
     nrow = 1
   ) +
-  labs(
+  ggplot2::labs(
     title = "Predictive Performance on the 2025 Temporal Test Set",
     subtitle = "Points show bootstrap mean estimates; bars show 95% collision-level bootstrap intervals",
     x = NULL,
@@ -386,14 +387,14 @@ figure6 <- ggplot(
       "lower Brier scores indicate better probability accuracy."
     )
   ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    strip.text = element_text(face = "bold"),
-    plot.title = element_text(face = "bold"),
-    panel.grid.minor = element_blank()
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::theme(
+    strip.text = ggplot2::element_text(face = "bold"),
+    plot.title = ggplot2::element_text(face = "bold"),
+    panel.grid.minor = ggplot2::element_blank()
   )
 
-ggsave(
+ggplot2::ggsave(
   file.path(figure_dir, "Figure_6_Model_Performance_2025.png"),
   figure6,
   width = 11,
@@ -404,16 +405,16 @@ ggsave(
 # ---- Numerical manuscript audit --------------------------------------------
 
 xgb_cv_roc <- cv_performance %>%
-  filter(Model == "XGBoost") %>%
-  pull(ROC)
+  dplyr::filter(Model == "XGBoost") %>%
+  dplyr::pull(ROC)
 
 xgb_test <- test_performance %>%
-  filter(Model == "XGBoost")
+  dplyr::filter(Model == "XGBoost")
 
 xgb_calibration <- calibration_summary %>%
-  filter(Model == "XGBoost")
+  dplyr::filter(Model == "XGBoost")
 
-manuscript_audit <- tibble(
+manuscript_audit <- tibble::tibble(
   Quantity = c(
     "2024 casualties",
     "2025 casualties",
