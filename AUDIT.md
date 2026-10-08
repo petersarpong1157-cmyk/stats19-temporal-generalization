@@ -252,6 +252,19 @@ The full paired collision-level bootstrap (B = 500; seed 20261007) completed suc
 
 The run emitted two `UseMethod("depth")` warnings involving a NULL object after completion. The numerical bootstrap outputs and saved objects were produced successfully; the warnings remain noted for final environment-level review.
 
+## Clean-run final reporting verification
+
+The final reporting stage completed successfully from a clean R session. It reproduced the final model-performance table, numerical manuscript audit, study-design figure, model-performance figure, and session information.
+
+Verified generated artifacts included:
+- `outputs/tables/Final_Model_Performance.csv`;
+- `outputs/tables/Manuscript_Numerical_Audit.csv`;
+- `outputs/figures/Figure_1_Study_Design.png`;
+- `outputs/figures/Figure_6_Model_Performance_2025.png`;
+- `session/sessionInfo.txt`.
+
+The final numerical audit reproduced the expected sample sizes, recorded-KSI counts and prevalence, 2025 KSI-collision proportion, XGBoost development/test discrimination, PR-AUC, Brier score, calibration parameters, locked threshold, and threshold-transfer metrics.
+
 ## Audit principle
 
 This audit documents source-file structure, linkage behavior, coding decisions, and known data-quality constraints. It does not convert predictive or SHAP results into causal claims.
