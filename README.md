@@ -107,11 +107,11 @@ source("R/09_final_tables_figures.R")
 
 Model fitting, SHAP calculation, and the collision-level bootstrap can take substantial time.
 
-For a final release, run the entire workflow from a clean R session and compare `outputs/tables/Manuscript_Numerical_Audit.csv` with the manuscript.
+The complete workflow has been clean-run verified end to end from the six raw STATS19 CSV files through model fitting, temporal validation, subgroup analysis, SHAP, the 500-replicate collision-level bootstrap, and final publication outputs. The verified run reproduced `outputs/tables/Manuscript_Numerical_Audit.csv` and the manuscript headline values. See `AUDIT.md` for details and non-fatal warnings observed during the run.
 
 ## Reproducibility audit
 
-The source CSV schemas, record counts, linkage keys, outcome counts, temporal category compatibility, and selected data-guide coding decisions have been checked against the exact files used to develop the manuscript.
+The source CSV schemas, record counts, linkage keys, outcome counts, temporal category compatibility, selected data-guide coding decisions, model-development workflow, temporal validation, subgroup analyses, SHAP calculations, bootstrap uncertainty analysis, and final-output generation have been checked against the exact files used to develop the manuscript.
 
 See **[AUDIT.md](AUDIT.md)** for the audit record.
 
