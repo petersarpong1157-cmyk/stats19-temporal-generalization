@@ -171,13 +171,51 @@ categorical_predictors <- c(
   "age_band_of_driver"
 )
 
+# Preserve the categorical level ordering used in the original analysis.
+# Four source variables were originally encoded from character values, so their
+# factor levels followed lexicographic rather than numeric ordering. XGBoost's
+# dummy-variable names/order depend on this, and with colsample_bytree < 1 the
+# fitted probabilities can change slightly if the order changes.
+original_factor_levels <- list(
+  age_band_of_casualty = c(
+    "-1", "1", "10", "11", "2", "3", "4", "5", "6", "7", "8", "9"
+  ),
+  casualty_type = c(
+    "-1", "0", "1", "10", "11", "16", "17", "18", "19", "2",
+    "20", "21", "22", "23", "3", "33", "4", "5", "8", "9",
+    "90", "97", "98", "99"
+  ),
+  vehicle_type = c(
+    "-1", "1", "10", "11", "16", "17", "18", "19", "2", "20",
+    "21", "22", "23", "3", "33", "4", "5", "8", "9", "90",
+    "97", "98", "99"
+  ),
+  age_band_of_driver = c(
+    "-1", "1", "10", "11", "2", "3", "4", "5", "6", "7", "8", "9"
+  )
+)
+
 for (v in categorical_predictors) {
-  analysis_2024[[v]] <- factor(analysis_2024[[v]])
+  if (v %in% names(original_factor_levels)) {
+    analysis_2024[[v]] <- factor(
+      as.character(analysis_2024[[v]]),
+      levels = original_factor_levels[[v]]
+    )
+  } else {
+    analysis_2024[[v]] <- factor(analysis_2024[[v]])
+  }
 
   analysis_2025[[v]] <- factor(
-    analysis_2025[[v]],
+    as.character(analysis_2025[[v]]),
     levels = levels(analysis_2024[[v]])
   )
+
+  if (anyNA(analysis_2024[[v]])) {
+    stop(
+      "2024 contains values outside the declared factor levels for predictor: ",
+      v
+    )
+  }
 
   if (anyNA(analysis_2025[[v]])) {
     stop(
