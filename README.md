@@ -141,4 +141,6 @@ Manuscript in preparation. The working manuscript file is intentionally not comm
 
 ## License
 
-No software/content license has been selected yet. A license should be chosen before public reuse is invited.
+The repository code is released under the **MIT License**. See [LICENSE](LICENSE).
+
+Raw STATS19 data are not redistributed by this repository and remain subject to the terms of their original public source.
