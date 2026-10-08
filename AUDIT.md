@@ -157,7 +157,11 @@ The clean refit produced:
 
 The two OOF probability vectors were highly correlated (r = 0.9984158), with mean absolute probability difference 0.0047459 and maximum absolute difference 0.0875883. The selected hyperparameters were identical and model discrimination was effectively unchanged, but the Youden-optimal operating point was sensitive to these small probability changes.
 
-This threshold discrepancy is unresolved at this stage and must be traced to the exact resampling seeds, package/runtime versions, and XGBoost execution details before release. The repository must not claim exact clean-run reproduction of the manuscript threshold until that issue is resolved.
+Further diagnostics showed that the archived and clean-refit models used identical grouped-CV training folds, identical held-out fold definitions, identical caret seed lists, identical selected XGBoost hyperparameters, and the same recorded R/package environment (R 4.5.2; caret 7.0-1; xgboost 1.7.11.1; ranger 0.18.0; pROC 1.19.0.1; dplyr 1.2.1; Matrix 1.7-4).
+
+The threshold discrepancy is therefore not explained by fold assignment, caret seeds, selected hyperparameters, or the recorded package versions. The next audit step is to compare the exact training data/model matrix embedded in the archived and clean-refit caret objects. If those inputs are identical, the remaining explanation is execution-level numerical/stochastic behavior (for example multithreaded XGBoost fitting), which will require deterministic single-thread verification before release.
+
+The repository must not claim exact clean-run reproduction of the manuscript threshold until that issue is resolved.
 
 The remaining reproducibility work is to resolve the threshold discrepancy and then execute the subgroup, SHAP, bootstrap, and final-output stages from the same clean checkout.
 
