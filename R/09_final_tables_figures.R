@@ -176,7 +176,7 @@ final_model_table <- test_performance %>%
   ) %>%
   dplyr::left_join(
     cv_performance %>%
-      select(
+      dplyr::select(
         Model,
         CV_ROC_2024 = ROC
       ),
