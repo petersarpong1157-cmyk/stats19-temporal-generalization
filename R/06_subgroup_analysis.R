@@ -30,14 +30,14 @@ subgroup_performance <- function(
     rlang::ensym(group_var)
   )
 
-  tibble(
+  tibble::tibble(
     Group = as.character(data[[group_name]]),
     y = data$KSI_num,
     p = probs
   ) %>%
-    group_by(Group) %>%
-    summarise(
-      N = n(),
+    dplyr::group_by(Group) %>%
+    dplyr::summarise(
+      N = dplyr::n(),
       KSI_N = sum(y == 1),
       KSI_Rate = mean(y),
       ROC_AUC = safe_roc_auc(y, p),
@@ -45,12 +45,12 @@ subgroup_performance <- function(
       Brier = mean((p - y)^2),
       .groups = "drop"
     ) %>%
-    filter(
+    dplyr::filter(
       N >= min_n,
       KSI_N >= min_positive,
       (N - KSI_N) >= min_positive
     ) %>%
-    mutate(
+    dplyr::mutate(
       Variable = group_name,
       .before = 1
     )
@@ -67,21 +67,21 @@ threshold_subgroup <- function(
     rlang::ensym(group_var)
   )
 
-  tibble(
+  tibble::tibble(
     Group = as.character(data[[group_name]]),
     y = data$KSI_num,
     p = probs
   ) %>%
-    mutate(
-      pred = if_else(
+    dplyr::mutate(
+      pred = dplyr::if_else(
         p >= threshold,
         1L,
         0L
       )
     ) %>%
-    group_by(Group) %>%
-    summarise(
-      N = n(),
+    dplyr::group_by(Group) %>%
+    dplyr::summarise(
+      N = dplyr::n(),
       KSI_Rate = mean(y),
       TP = sum(pred == 1 & y == 1),
       TN = sum(pred == 0 & y == 0),
@@ -89,8 +89,8 @@ threshold_subgroup <- function(
       FN = sum(pred == 0 & y == 1),
       .groups = "drop"
     ) %>%
-    filter(N >= min_n) %>%
-    mutate(
+    dplyr::filter(N >= min_n) %>%
+    dplyr::mutate(
       Sensitivity = TP / (TP + FN),
       Specificity = TN / (TN + FP),
       Precision = TP / (TP + FP),
@@ -99,7 +99,7 @@ threshold_subgroup <- function(
       Variable = group_name,
       .before = 1
     ) %>%
-    select(
+    dplyr::select(
       Variable,
       Group,
       N,
@@ -111,7 +111,7 @@ threshold_subgroup <- function(
     )
 }
 
-heterogeneity_results <- bind_rows(
+heterogeneity_results <- dplyr::bind_rows(
   subgroup_performance(
     model25,
     xgb_prob_2025,
@@ -139,7 +139,7 @@ heterogeneity_results <- bind_rows(
   )
 )
 
-threshold_heterogeneity <- bind_rows(
+threshold_heterogeneity <- dplyr::bind_rows(
   threshold_subgroup(
     model25,
     xgb_prob_2025,
