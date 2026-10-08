@@ -37,6 +37,6 @@ The analysis workflow has passed a full end-to-end clean run. This file tracks t
 - [ ] Optionally generate `renv.lock` from the verified local R environment.
 - [x] Release version/tag chosen and published: `v3.2.6`.
 - [x] Archive tagged release with Zenodo. DOI: `10.5281/zenodo.23240708`.
-- [ ] Update the private manuscript Data/Code Availability text with release `v3.2.6` and DOI `10.5281/zenodo.23240708`.
+- [x] Update the private manuscript Data/Code Availability text with release `v3.2.6` and DOI `10.5281/zenodo.23240708`.
 
 Do not publish the manuscript, create a formal tag, or claim a DOI until the author explicitly chooses those items.
