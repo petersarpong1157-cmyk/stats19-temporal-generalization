@@ -72,7 +72,7 @@ for (b in seq_len(B)) {
   brier_rf <- mean((p_rf - y)^2)
   brier_xgb <- mean((p_xgb - y)^2)
 
-  bootstrap_results[[b]] <- tibble(
+  bootstrap_results[[b]] <- tibble::tibble(
     Replicate = b,
 
     Logistic_ROC = auc_logit,
@@ -111,12 +111,12 @@ for (b in seq_len(B)) {
   }
 }
 
-bootstrap_results <- bind_rows(
+bootstrap_results <- dplyr::bind_rows(
   bootstrap_results
 )
 
 bootstrap_ci <- function(x) {
-  tibble(
+  tibble::tibble(
     Estimate_Mean = mean(x),
     Lower_95 = quantile(
       x,
@@ -131,58 +131,58 @@ bootstrap_ci <- function(x) {
   )
 }
 
-bootstrap_summary <- bind_rows(
+bootstrap_summary <- dplyr::bind_rows(
   bootstrap_ci(
     bootstrap_results$Logistic_ROC
   ) %>%
-    mutate(Metric = "Logistic ROC-AUC"),
+    dplyr::mutate(Metric = "Logistic ROC-AUC"),
 
   bootstrap_ci(
     bootstrap_results$RF_ROC
   ) %>%
-    mutate(Metric = "Random Forest ROC-AUC"),
+    dplyr::mutate(Metric = "Random Forest ROC-AUC"),
 
   bootstrap_ci(
     bootstrap_results$XGB_ROC
   ) %>%
-    mutate(Metric = "XGBoost ROC-AUC"),
+    dplyr::mutate(Metric = "XGBoost ROC-AUC"),
 
   bootstrap_ci(
     bootstrap_results$Logistic_PR
   ) %>%
-    mutate(Metric = "Logistic PR-AUC"),
+    dplyr::mutate(Metric = "Logistic PR-AUC"),
 
   bootstrap_ci(
     bootstrap_results$RF_PR
   ) %>%
-    mutate(Metric = "Random Forest PR-AUC"),
+    dplyr::mutate(Metric = "Random Forest PR-AUC"),
 
   bootstrap_ci(
     bootstrap_results$XGB_PR
   ) %>%
-    mutate(Metric = "XGBoost PR-AUC"),
+    dplyr::mutate(Metric = "XGBoost PR-AUC"),
 
   bootstrap_ci(
     bootstrap_results$XGB_minus_Logit_ROC
   ) %>%
-    mutate(Metric = "XGBoost - Logistic ROC"),
+    dplyr::mutate(Metric = "XGBoost - Logistic ROC"),
 
   bootstrap_ci(
     bootstrap_results$XGB_minus_RF_ROC
   ) %>%
-    mutate(Metric = "XGBoost - RF ROC"),
+    dplyr::mutate(Metric = "XGBoost - RF ROC"),
 
   bootstrap_ci(
     bootstrap_results$XGB_minus_Logit_PR
   ) %>%
-    mutate(Metric = "XGBoost - Logistic PR"),
+    dplyr::mutate(Metric = "XGBoost - Logistic PR"),
 
   bootstrap_ci(
     bootstrap_results$XGB_minus_RF_PR
   ) %>%
-    mutate(Metric = "XGBoost - RF PR")
+    dplyr::mutate(Metric = "XGBoost - RF PR")
 ) %>%
-  select(
+  dplyr::select(
     Metric,
     Estimate_Mean,
     Lower_95,
