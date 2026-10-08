@@ -235,6 +235,23 @@ The within-road-user SHAP summaries also reproduced. For pedestrians, the leadin
 
 The XGBoost sensitivity model excluding casualty_type remained essentially unchanged in discrimination and probability accuracy (2024 CV ROC-AUC ≈ 0.705; 2025 ROC-AUC ≈ 0.702; PR-AUC ≈ 0.420; Brier ≈ 0.159), supporting the interpretation that casualty_type is globally important but substantially redundant with other road-user and vehicle predictors.
 
+## Clean-run bootstrap verification
+
+The full paired collision-level bootstrap (B = 500; seed 20261007) completed successfully and reproduced the manuscript uncertainty results:
+
+- Logistic ROC-AUC mean ≈ 0.695, 95% CI ≈ 0.691–0.698.
+- Random Forest ROC-AUC mean ≈ 0.699, 95% CI ≈ 0.695–0.703.
+- XGBoost ROC-AUC mean ≈ 0.702, 95% CI ≈ 0.698–0.705.
+- Logistic PR-AUC mean ≈ 0.413, 95% CI ≈ 0.406–0.419.
+- Random Forest PR-AUC mean ≈ 0.418, 95% CI ≈ 0.411–0.423.
+- XGBoost PR-AUC mean ≈ 0.422, 95% CI ≈ 0.415–0.428.
+- XGBoost minus Logistic ROC ≈ 0.00719, 95% CI ≈ 0.00566–0.00847.
+- XGBoost minus Random Forest ROC ≈ 0.00287, 95% CI ≈ 0.00185–0.00390.
+- XGBoost minus Logistic PR ≈ 0.00885, 95% CI ≈ 0.00669–0.0110.
+- XGBoost minus Random Forest PR ≈ 0.00430, 95% CI ≈ 0.00234–0.00616.
+
+The run emitted two `UseMethod("depth")` warnings involving a NULL object after completion. The numerical bootstrap outputs and saved objects were produced successfully; the warnings remain noted for final environment-level review.
+
 ## Audit principle
 
 This audit documents source-file structure, linkage behavior, coding decisions, and known data-quality constraints. It does not convert predictive or SHAP results into causal claims.
