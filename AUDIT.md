@@ -201,6 +201,24 @@ The corrected clean run reproduced:
 
 This confirms that the earlier threshold discrepancy came from categorical level ordering in the reconstructed pipeline, not from the source data, grouped folds, caret seeds, selected hyperparameters, or recorded package versions.
 
+## Clean-run subgroup verification
+
+The corrected clean pipeline also reproduced the 2025 road-user subgroup results.
+
+For casualty class:
+
+- Driver/rider: N = 83,976; KSI prevalence ≈ 0.223; ROC-AUC ≈ 0.705; PR-AUC ≈ 0.422; Brier ≈ 0.156.
+- Passenger: N = 23,929; KSI prevalence ≈ 0.182; ROC-AUC ≈ 0.681; PR-AUC ≈ 0.319; Brier ≈ 0.140.
+- Pedestrian: N = 19,978; KSI prevalence ≈ 0.310; ROC-AUC ≈ 0.664; PR-AUC ≈ 0.475; Brier ≈ 0.198.
+
+At the same locked 2024 threshold, the clean run reproduced:
+
+- Driver/rider: sensitivity ≈ 0.622; specificity ≈ 0.668; precision ≈ 0.350.
+- Passenger: sensitivity ≈ 0.463; specificity ≈ 0.786; precision ≈ 0.325.
+- Pedestrian: sensitivity ≈ 0.885; specificity ≈ 0.260; precision ≈ 0.350.
+
+These are descriptive predictive-performance differences across road-user groups and are not labeled as causal effects or fairness/bias findings.
+
 ## Audit principle
 
 This audit documents source-file structure, linkage behavior, coding decisions, and known data-quality constraints. It does not convert predictive or SHAP results into causal claims.
