@@ -23,7 +23,7 @@ The analysis workflow has passed a full end-to-end clean run. This file tracks t
 
 ## Decisions still required before a formal release
 
-- [ ] Choose a repository license. No license has been selected automatically.
+- [x] Choose a repository license: MIT License.
 - [ ] Decide whether selected generated tables/figures should be committed.
 - [ ] Decide whether the working manuscript should remain private or be included.
 - [ ] Optionally generate `renv.lock` from the verified local R environment.
@@ -31,4 +31,4 @@ The analysis workflow has passed a full end-to-end clean run. This file tracks t
 - [ ] If desired, archive the tagged release with a DOI-issuing service and then add the DOI to `CITATION.cff`.
 - [ ] Update manuscript Data/Code Availability text with the final tagged release and DOI, if one is created.
 
-Do not add a license, publish the manuscript, create a formal tag, or claim a DOI until the author explicitly chooses those items.
+Do not publish the manuscript, create a formal tag, or claim a DOI until the author explicitly chooses those items.
