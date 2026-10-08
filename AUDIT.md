@@ -124,7 +124,24 @@ Codes 6 (Oil or diesel) and 7 (Mud) are absent from both the 2024 and 2025 colli
 
 The repository includes a GitHub Actions syntax-check workflow and a complete `R/run_all.R` driver.
 
-The import and linkage stages have now passed a clean-run test. The remaining reproducibility work is to execute the descriptive, model-development, temporal-validation, subgroup, SHAP, bootstrap, and final-output scripts from the same clean checkout and confirm that they reproduce the manuscript audit values.
+The import, linkage, descriptive-analysis, and model-development stages have now passed clean-run checks.
+
+The descriptive stage reproduced:
+- 101,525 collisions in 2025;
+- 26,644 KSI collisions;
+- an overall KSI-collision proportion of 26.24378%;
+- the expected hourly, daypart, environmental, road-type, and junction-context summaries.
+
+The 2024 grouped model-development stage reproduced the expected selected models:
+- Logistic regression ROC-AUC ≈ 0.697;
+- Random Forest ROC-AUC ≈ 0.701, with mtry = 9, splitrule = gini, min.node.size = 100;
+- XGBoost ROC-AUC ≈ 0.706, with nrounds = 600, max_depth = 3, eta = 0.05, gamma = 0, colsample_bytree = 0.8, min_child_weight = 5, subsample = 0.8.
+
+All five grouped validation folds had zero collision overlap.
+
+A reporting-stage namespace conflict involving `slice()` was encountered after fitting. The script was corrected to use explicit `dplyr` namespaces and to checkpoint fitted models immediately after training.
+
+The remaining reproducibility work is to execute the temporal-validation, subgroup, SHAP, bootstrap, and final-output stages from the same clean checkout and confirm that they reproduce the manuscript audit values.
 
 Final release status should not be assigned until that full clean run succeeds.
 
