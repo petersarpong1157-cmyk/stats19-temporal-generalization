@@ -26,6 +26,7 @@ The analysis workflow has passed a full end-to-end clean run. This file tracks t
 - [x] GitHub release `v3.2.6` published on 2026-10-08.
 - [x] Release marked as the latest release.
 - [x] Working manuscript excluded from the release.
+- [x] Zenodo DOI `10.5281/zenodo.23240708` minted for the release.
 
 ## Remaining post-release decisions
 
@@ -35,7 +36,7 @@ The analysis workflow has passed a full end-to-end clean run. This file tracks t
 - [x] Working manuscript will remain private and will not be included in the repository.
 - [ ] Optionally generate `renv.lock` from the verified local R environment.
 - [x] Release version/tag chosen and published: `v3.2.6`.
-- [ ] If desired, archive the tagged release with a DOI-issuing service and then add the DOI to `CITATION.cff`.
-- [ ] Update manuscript Data/Code Availability text with the final tagged release and DOI, if one is created.
+- [x] Archive tagged release with Zenodo. DOI: `10.5281/zenodo.23240708`.
+- [ ] Update the private manuscript Data/Code Availability text with release `v3.2.6` and DOI `10.5281/zenodo.23240708`.
 
 Do not publish the manuscript, create a formal tag, or claim a DOI until the author explicitly chooses those items.
