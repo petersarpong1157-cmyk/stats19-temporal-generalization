@@ -167,6 +167,21 @@ The remaining reproducibility work is to resolve the threshold discrepancy and t
 
 Final release status should not be assigned until that full clean run succeeds.
 
+## Root cause of clean-refit threshold discrepancy
+
+The archived and clean-refit training data had identical dimensions, identical column names, identical numeric values, and identical category counts. The difference was limited to factor-level ordering for four predictors:
+
+- `age_band_of_casualty`
+- `casualty_type`
+- `vehicle_type`
+- `age_band_of_driver`
+
+The archived model used lexicographic level ordering for these four variables (for example age bands `-1, 1, 10, 11, 2, ...`), whereas the first reconstructed pipeline converted their numeric source values directly to factors, producing numeric ordering (`-1, 1, 2, 3, ... 10, 11`).
+
+The underlying observations and category frequencies were identical. However, the different factor ordering changed the dummy-variable names/order passed to XGBoost. Because the fitted model uses `colsample_bytree = 0.8`, this can alter the sampled feature subsets and therefore slightly change fitted probabilities even when folds, seeds, hyperparameters, and package versions are identical.
+
+`R/02_data_linkage_cleaning.R` now declares the original level ordering explicitly for these four predictors. A fresh refit is required to verify that the archived OOF probabilities and threshold are recovered.
+
 ## Audit principle
 
 This audit documents source-file structure, linkage behavior, coding decisions, and known data-quality constraints. It does not convert predictive or SHAP results into causal claims.
