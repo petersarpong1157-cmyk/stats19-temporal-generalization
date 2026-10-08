@@ -170,7 +170,7 @@ conceptual_shap <- cbind(
     grouped_shap_signed[, "month_cos"]
 )
 
-grouped_shap_final <- tibble::tibble::tibble(
+grouped_shap_final <- tibble::tibble(
   Variable = colnames(conceptual_shap),
   Mean_Absolute_SHAP =
     colMeans(abs(conceptual_shap))
@@ -274,7 +274,7 @@ casualty_type_final <- casualty_type_shap %>%
         casualty_type_labels[casualty_type]
       )
   ) %>%
-  dplyr::arrange(desc(Mean_SHAP))
+  dplyr::arrange(dplyr::desc(Mean_SHAP))
 
 casualty_type_publication <- casualty_type_final %>%
   dplyr::filter(N_2025 >= 500) %>%
@@ -416,7 +416,7 @@ within_group_shap <- lapply(
         ),
       N = sum(idx)
     ) %>%
-      arrange(desc(Mean_Absolute_SHAP)) %>%
+      dplyr::arrange(dplyr::desc(Mean_Absolute_SHAP)) %>%
       mutate(Rank = row_number())
   }
 ) %>%
@@ -424,7 +424,7 @@ within_group_shap <- lapply(
 
 top_within_group <- within_group_shap %>%
   dplyr::group_by(Casualty_Class) %>%
-  slice_min(
+  dplyr::slice_min(
     order_by = Rank,
     n = 8
   ) %>%
