@@ -141,7 +141,9 @@ Manuscript in preparation. The working manuscript will remain private and is int
 
 ## Release status
 
-The verified public code and selected publication artifacts are prepared for release **v3.2.5**.
+The verified public code and selected publication artifacts were released as **v3.2.6** on 2026-10-08.
+
+GitHub release: https://github.com/petersarpong1157-cmyk/stats19-temporal-generalization/releases/tag/v3.2.6
 
 ## License
 
