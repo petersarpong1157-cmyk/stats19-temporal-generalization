@@ -16,9 +16,9 @@ if (!exists("model24")) {
 }
 
 train24 <- model24 %>%
-  select(
+  dplyr::select(
     KSI,
-    all_of(primary_predictors)
+    dplyr::all_of(primary_predictors)
   )
 
 set.seed(20261006)
@@ -29,7 +29,7 @@ group_folds <- caret::groupKFold(
 )
 
 # Confirm that no collision appears in both train and validation portions.
-fold_audit <- map_dfr(
+fold_audit <- purrr::map_dfr(
   seq_along(group_folds),
   function(i) {
     train_idx <- group_folds[[i]]
@@ -38,7 +38,7 @@ fold_audit <- map_dfr(
     train_collisions <- unique(model24$collision_index[train_idx])
     valid_collisions <- unique(model24$collision_index[valid_idx])
 
-    tibble(
+    tibble::tibble(
       Fold = i,
       Train_Rows = length(train_idx),
       Validation_Rows = length(valid_idx),
@@ -58,27 +58,38 @@ if (any(fold_audit$Collision_Overlap != 0)) {
   stop("Collision leakage detected in grouped cross-validation.")
 }
 
-ctrl_grouped <- trainControl(
+ctrl_grouped <- caret::trainControl(
   method = "cv",
   number = 5,
   index = group_folds,
   classProbs = TRUE,
-  summaryFunction = twoClassSummary,
+  summaryFunction = caret::twoClassSummary,
   savePredictions = "final",
   allowParallel = TRUE
+)
+
+saveRDS(
+  ctrl_grouped,
+  file.path(data_derived_dir, "grouped_train_control.rds")
 )
 
 # ---- Logistic regression ----------------------------------------------------
 
 set.seed(20261006)
 
-logit_fit <- train(
+logit_fit <- caret::train(
   KSI ~ .,
   data = train24,
   method = "glm",
-  family = binomial(),
+  family = stats::binomial(),
   metric = "ROC",
   trControl = ctrl_grouped
+)
+
+# Save immediately so a later reporting error does not require refitting.
+saveRDS(
+  logit_fit,
+  file.path(model_dir, "Final_Logistic_Model_2024.rds")
 )
 
 # ---- Random Forest ----------------------------------------------------------
@@ -91,7 +102,7 @@ rf_grid <- expand.grid(
 
 set.seed(20261006)
 
-rf_fit <- train(
+rf_fit <- caret::train(
   KSI ~ .,
   data = train24,
   method = "ranger",
@@ -100,6 +111,11 @@ rf_fit <- train(
   tuneGrid = rf_grid,
   num.trees = 500,
   importance = "none"
+)
+
+saveRDS(
+  rf_fit,
+  file.path(model_dir, "Final_RandomForest_Model_2024.rds")
 )
 
 # ---- XGBoost ---------------------------------------------------------------
@@ -116,7 +132,7 @@ xgb_grid <- expand.grid(
 
 set.seed(20261006)
 
-xgb_fit <- train(
+xgb_fit <- caret::train(
   KSI ~ .,
   data = train24,
   method = "xgbTree",
@@ -126,31 +142,44 @@ xgb_fit <- train(
   verbose = FALSE
 )
 
+saveRDS(
+  xgb_fit,
+  file.path(model_dir, "Final_XGBoost_Model_2024.rds")
+)
+
 # ---- Cross-validation summaries --------------------------------------------
+# Namespace dplyr explicitly because some modelling packages export functions
+# named slice/select that can mask tidyverse verbs in interactive sessions.
 
 logit_cv <- logit_fit$results %>%
-  arrange(desc(ROC)) %>%
-  slice(1) %>%
-  mutate(Model = "Logistic regression")
+  tibble::as_tibble() %>%
+  dplyr::arrange(dplyr::desc(ROC)) %>%
+  dplyr::slice_head(n = 1) %>%
+  dplyr::mutate(Model = "Logistic regression")
 
 rf_cv <- rf_fit$results %>%
-  semi_join(
-    rf_fit$bestTune,
+  tibble::as_tibble() %>%
+  dplyr::semi_join(
+    tibble::as_tibble(rf_fit$bestTune),
     by = names(rf_fit$bestTune)
   ) %>%
-  mutate(Model = "Random Forest")
+  dplyr::mutate(Model = "Random Forest")
 
 xgb_cv <- xgb_fit$results %>%
-  semi_join(
-    xgb_fit$bestTune,
+  tibble::as_tibble() %>%
+  dplyr::semi_join(
+    tibble::as_tibble(xgb_fit$bestTune),
     by = names(xgb_fit$bestTune)
   ) %>%
-  mutate(Model = "XGBoost")
+  dplyr::mutate(Model = "XGBoost")
 
-cv_performance <- bind_rows(
-  logit_cv %>% transmute(Model, ROC, Sens, Spec),
-  rf_cv %>% transmute(Model, ROC, Sens, Spec),
-  xgb_cv %>% transmute(Model, ROC, Sens, Spec)
+cv_performance <- dplyr::bind_rows(
+  logit_cv %>%
+    dplyr::transmute(Model, ROC, Sens, Spec),
+  rf_cv %>%
+    dplyr::transmute(Model, ROC, Sens, Spec),
+  xgb_cv %>%
+    dplyr::transmute(Model, ROC, Sens, Spec)
 )
 
 print(cv_performance)
@@ -179,26 +208,6 @@ write.csv(
   xgb_fit$results,
   file.path(table_dir, "XGBoost_Tuning_2024.csv"),
   row.names = FALSE
-)
-
-saveRDS(
-  logit_fit,
-  file.path(model_dir, "Final_Logistic_Model_2024.rds")
-)
-
-saveRDS(
-  rf_fit,
-  file.path(model_dir, "Final_RandomForest_Model_2024.rds")
-)
-
-saveRDS(
-  xgb_fit,
-  file.path(model_dir, "Final_XGBoost_Model_2024.rds")
-)
-
-saveRDS(
-  ctrl_grouped,
-  file.path(data_derived_dir, "grouped_train_control.rds")
 )
 
 message("Model development complete.")
