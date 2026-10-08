@@ -141,7 +141,25 @@ All five grouped validation folds had zero collision overlap.
 
 A reporting-stage namespace conflict involving `slice()` was encountered after fitting. The script was corrected to use explicit `dplyr` namespaces and to checkpoint fitted models immediately after training.
 
-The remaining reproducibility work is to execute the temporal-validation, subgroup, SHAP, bootstrap, and final-output stages from the same clean checkout and confirm that they reproduce the manuscript audit values.
+The 2025 temporal test performance and calibration also reproduced to the reported precision. However, the Youden threshold selected from clean-refit 2024 XGBoost out-of-fold probabilities did not reproduce exactly.
+
+The archived development model produced:
+- OOF ROC-AUC = 0.7055728;
+- threshold = 0.2185747;
+- OOF sensitivity = 0.6497359;
+- OOF specificity = 0.6456126.
+
+The clean refit produced:
+- OOF ROC-AUC = 0.7055583;
+- threshold = 0.2253372;
+- OOF sensitivity = 0.6266189;
+- OOF specificity = 0.6678227.
+
+The two OOF probability vectors were highly correlated (r = 0.9984158), with mean absolute probability difference 0.0047459 and maximum absolute difference 0.0875883. The selected hyperparameters were identical and model discrimination was effectively unchanged, but the Youden-optimal operating point was sensitive to these small probability changes.
+
+This threshold discrepancy is unresolved at this stage and must be traced to the exact resampling seeds, package/runtime versions, and XGBoost execution details before release. The repository must not claim exact clean-run reproduction of the manuscript threshold until that issue is resolved.
+
+The remaining reproducibility work is to resolve the threshold discrepancy and then execute the subgroup, SHAP, bootstrap, and final-output stages from the same clean checkout.
 
 Final release status should not be assigned until that full clean run succeeds.
 
