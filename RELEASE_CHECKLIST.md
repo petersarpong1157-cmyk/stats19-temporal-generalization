@@ -21,14 +21,20 @@ The analysis workflow has passed a full end-to-end clean run. This file tracks t
 - [x] R syntax-check workflow verified successful for the current analysis-code series.
 - [x] Citation metadata includes the author ORCID.
 
-## Decisions still required before a formal release
+## Published release
+
+- [x] GitHub release `v3.2.6` published on 2026-10-08.
+- [x] Release marked as the latest release.
+- [x] Working manuscript excluded from the release.
+
+## Remaining post-release decisions
 
 - [x] Choose a repository license: MIT License.
 - [x] Decide whether selected generated tables/figures should be committed: yes.
 - [x] Commit exact selected PNG outputs from the verified clean run (Figure 1, Figure 6, Figure 8, Figure 9).
 - [x] Working manuscript will remain private and will not be included in the repository.
 - [ ] Optionally generate `renv.lock` from the verified local R environment.
-- [x] Release version/tag chosen: `v3.2.5`.
+- [x] Release version/tag chosen and published: `v3.2.6`.
 - [ ] If desired, archive the tagged release with a DOI-issuing service and then add the DOI to `CITATION.cff`.
 - [ ] Update manuscript Data/Code Availability text with the final tagged release and DOI, if one is created.
 
