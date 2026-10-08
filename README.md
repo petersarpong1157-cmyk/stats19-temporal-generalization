@@ -137,7 +137,11 @@ Citation metadata are provided in `CITATION.cff`. A DOI will be added only if th
 
 ## Manuscript status
 
-Manuscript in preparation. The working manuscript file is intentionally not committed here until the author chooses to make it public.
+Manuscript in preparation. The working manuscript will remain private and is intentionally not committed to this repository.
+
+## Release status
+
+The verified public code and selected publication artifacts are prepared for release **v3.2.5**.
 
 ## License
 
