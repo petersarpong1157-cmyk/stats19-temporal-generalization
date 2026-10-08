@@ -26,9 +26,9 @@ The analysis workflow has passed a full end-to-end clean run. This file tracks t
 - [x] Choose a repository license: MIT License.
 - [x] Decide whether selected generated tables/figures should be committed: yes.
 - [x] Commit exact selected PNG outputs from the verified clean run (Figure 1, Figure 6, Figure 8, Figure 9).
-- [ ] Decide whether the working manuscript should remain private or be included.
+- [x] Working manuscript will remain private and will not be included in the repository.
 - [ ] Optionally generate `renv.lock` from the verified local R environment.
-- [ ] Choose a release version/tag, for example `v1.0.0`.
+- [x] Release version/tag chosen: `v3.2.5`.
 - [ ] If desired, archive the tagged release with a DOI-issuing service and then add the DOI to `CITATION.cff`.
 - [ ] Update manuscript Data/Code Availability text with the final tagged release and DOI, if one is created.
 
