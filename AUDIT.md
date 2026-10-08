@@ -30,15 +30,23 @@ With linkage keys treated consistently:
 - no casualty record is unmatched to its collision;
 - no casualty record is unmatched to its associated vehicle.
 
-## Clean-run verification completed so far
+## End-to-end clean-run verification
 
-A clean local checkout of the public repository has now successfully executed:
+A clean local run of `source("R/run_all.R")` was completed successfully from the six raw 2024/2025 STATS19 CSV files after deleting all generated derived data, models, tables, figures, and session files.
 
-- `R/00_setup.R`
-- `R/01_data_import.R`
-- `R/02_data_linkage_cleaning.R`
+The run completed every stage:
 
-against fresh copies of the six source CSV files placed in `data/raw/`.
+- setup and raw-data import;
+- linkage and feature construction;
+- descriptive analysis;
+- grouped 2024 model development;
+- untouched 2025 temporal validation;
+- subgroup analysis;
+- grouped SHAP and robustness analysis;
+- paired collision-level bootstrap with B = 500;
+- final tables, figures, numerical audit, and session information.
+
+The final console message was `Full STATS19 analysis completed.`
 
 The clean run reproduced the expected source dimensions exactly:
 
@@ -51,16 +59,27 @@ The clean run reproduced the expected source dimensions exactly:
 | 2025 | Vehicle | 183,948 |
 | 2025 | Casualty | 127,883 |
 
-The linkage/feature-construction stage also reproduced:
+The final numerical audit reproduced, among other values:
 
-- 2024 casualties: 128,272
-- 2024 recorded KSI: 27,642
-- 2024 recorded KSI prevalence: approximately 0.215
-- 2025 casualties: 127,883
-- 2025 recorded KSI: 29,296
-- 2025 recorded KSI prevalence: approximately 0.229
+- 2024 recorded KSI: 27,642;
+- 2025 recorded KSI: 29,296;
+- 2025 KSI-collision percentage: 26.243782%;
+- XGBoost 2024 grouped-CV ROC-AUC: 0.70559265;
+- XGBoost 2025 ROC-AUC: 0.70192661;
+- XGBoost 2025 PR-AUC: 0.42174420;
+- XGBoost 2025 Brier score: 0.15917844;
+- XGBoost calibration intercept: 0.056578325;
+- XGBoost calibration slope: 1.0119602;
+- locked threshold: 0.21857471;
+- 2025 sensitivity: 0.65387766;
+- 2025 specificity: 0.63445485;
+- 2025 precision: 0.34706671;
+- 2025 NPV: 0.86050159;
+- 2025 balanced accuracy: 0.64416625.
 
-This verifies the public repository through data import, linkage, outcome construction, and primary feature preparation. The modelling, SHAP, bootstrap, and final-output stages still require clean-run verification before a release is tagged.
+All checked derived-data objects, fitted models, final tables, final figures, and `session/sessionInfo.txt` existed after the clean run.
+
+The end-to-end run emitted non-fatal warnings from rank-deficient logistic-regression prediction fits and `UseMethod("depth")` on a NULL object. These warnings did not stop execution or prevent generation of the verified outputs and are retained here for transparency.
 
 ## Outcome checks
 
@@ -122,7 +141,7 @@ Codes 6 (Oil or diesel) and 7 (Mud) are absent from both the 2024 and 2025 colli
 
 ## Validation status
 
-The repository includes a GitHub Actions syntax-check workflow and a complete `R/run_all.R` driver.
+The repository includes a GitHub Actions syntax-check workflow and a complete `R/run_all.R` driver. The full data-dependent workflow has now also passed an end-to-end clean run using the public code and the six raw source CSV files.
 
 The import, linkage, descriptive-analysis, and model-development stages have now passed clean-run checks.
 
@@ -161,11 +180,7 @@ Further diagnostics showed that the archived and clean-refit models used identic
 
 The threshold discrepancy is therefore not explained by fold assignment, caret seeds, selected hyperparameters, or the recorded package versions. The next audit step is to compare the exact training data/model matrix embedded in the archived and clean-refit caret objects. If those inputs are identical, the remaining explanation is execution-level numerical/stochastic behavior (for example multithreaded XGBoost fitting), which will require deterministic single-thread verification before release.
 
-The repository must not claim exact clean-run reproduction of the manuscript threshold until that issue is resolved.
-
-The remaining reproducibility work is to resolve the threshold discrepancy and then execute the subgroup, SHAP, bootstrap, and final-output stages from the same clean checkout.
-
-Final release status should not be assigned until that full clean run succeeds.
+The threshold discrepancy was subsequently resolved by restoring the original factor-level ordering, as documented below. The corrected pipeline then reproduced the manuscript threshold and completed the full end-to-end clean run successfully.
 
 ## Root cause of clean-refit threshold discrepancy
 
@@ -180,7 +195,7 @@ The archived model used lexicographic level ordering for these four variables (f
 
 The underlying observations and category frequencies were identical. However, the different factor ordering changed the dummy-variable names/order passed to XGBoost. Because the fitted model uses `colsample_bytree = 0.8`, this can alter the sampled feature subsets and therefore slightly change fitted probabilities even when folds, seeds, hyperparameters, and package versions are identical.
 
-`R/02_data_linkage_cleaning.R` now declares the original level ordering explicitly for these four predictors. A fresh refit is required to verify that the archived OOF probabilities and threshold are recovered.
+`R/02_data_linkage_cleaning.R` now declares the original level ordering explicitly for these four predictors. A subsequent fresh refit recovered the archived operating-point behavior and the full clean run reproduced the manuscript threshold.
 
 ## Clean-refit resolution
 
