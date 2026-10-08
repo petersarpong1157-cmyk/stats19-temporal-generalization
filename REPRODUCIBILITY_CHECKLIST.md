@@ -192,6 +192,12 @@ After the successful clean run:
 4. commit selected publication tables and figures;
 5. tag the release only after the manuscript-number audit passes.
 
+## Verified clean run
+
+A complete clean run of `source("R/run_all.R")` was completed successfully on 2026-10-08 after removing all generated derived data, models, tables, figures, and session files while retaining only the six raw STATS19 CSV inputs.
+
+The run reproduced the manuscript numerical audit, the 500-replicate collision-level bootstrap, grouped SHAP results, subgroup results, fitted-model outputs, final tables, final figures, and session information. Non-fatal warnings observed during the run are documented in `AUDIT.md`.
+
 ## 15. Release rule
 
 A public repository is not automatically a reproducible release. The release should be tagged only after the complete clean run succeeds using the public code and freshly downloaded source files.
