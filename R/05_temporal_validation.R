@@ -30,9 +30,9 @@ xgb_fit <- readRDS(
 )
 
 test25 <- model25 %>%
-  select(
+  dplyr::select(
     KSI,
-    all_of(primary_predictors)
+    dplyr::all_of(primary_predictors)
   )
 
 # ---- Temporal test probabilities -------------------------------------------
@@ -58,7 +58,7 @@ xgb_prob_2025 <- predict(
 y25 <- model25$KSI_num
 
 model_metrics <- function(model_name, y, p) {
-  tibble(
+  tibble::tibble(
     Model = model_name,
     N = length(y),
     KSI_Prevalence = mean(y),
@@ -68,7 +68,7 @@ model_metrics <- function(model_name, y, p) {
   )
 }
 
-test_performance <- bind_rows(
+test_performance <- dplyr::bind_rows(
   model_metrics(
     "Logistic regression",
     y25,
@@ -98,26 +98,26 @@ calibration_parameters <- function(model_name, y, p) {
 
   lp <- qlogis(p_clip)
 
-  intercept_fit <- glm(
+  intercept_fit <- stats::glm(
     y ~ offset(lp),
-    family = binomial()
+    family = stats::binomial()
   )
 
-  slope_fit <- glm(
+  slope_fit <- stats::glm(
     y ~ lp,
-    family = binomial()
+    family = stats::binomial()
   )
 
-  tibble(
+  tibble::tibble(
     Model = model_name,
     Calibration_Intercept =
-      unname(coef(intercept_fit)[1]),
+      unname(stats::coef(intercept_fit)[1]),
     Calibration_Slope =
-      unname(coef(slope_fit)["lp"])
+      unname(stats::coef(slope_fit)["lp"])
   )
 }
 
-calibration_summary <- bind_rows(
+calibration_summary <- dplyr::bind_rows(
   calibration_parameters(
     "Logistic regression",
     y25,
@@ -137,62 +137,62 @@ calibration_summary <- bind_rows(
 
 print(calibration_summary)
 
-calibration_deciles <- bind_rows(
-  tibble(
+calibration_deciles <- dplyr::bind_rows(
+  tibble::tibble(
     Model = "Logistic regression",
     y = y25,
     p = logit_prob_2025
   ),
-  tibble(
+  tibble::tibble(
     Model = "Random Forest",
     y = y25,
     p = rf_prob_2025
   ),
-  tibble(
+  tibble::tibble(
     Model = "XGBoost",
     y = y25,
     p = xgb_prob_2025
   )
 ) %>%
-  group_by(Model) %>%
-  mutate(Bin = ntile(p, 10)) %>%
-  group_by(Model, Bin) %>%
-  summarise(
-    N = n(),
+  dplyr::group_by(Model) %>%
+  dplyr::mutate(Bin = dplyr::ntile(p, 10)) %>%
+  dplyr::group_by(Model, Bin) %>%
+  dplyr::summarise(
+    N = dplyr::n(),
     Mean_Predicted = mean(p),
     Observed_KSI = mean(y),
     .groups = "drop"
   )
 
-calibration_plot <- ggplot(
+calibration_plot <- ggplot2::ggplot(
   calibration_deciles,
-  aes(
+  ggplot2::aes(
     x = Mean_Predicted,
     y = Observed_KSI,
     group = Model
   )
 ) +
-  geom_abline(
+  ggplot2::geom_abline(
     slope = 1,
     intercept = 0,
     linetype = "dashed"
   ) +
-  geom_line() +
-  geom_point() +
-  facet_wrap(~ Model) +
-  coord_equal() +
-  labs(
+  ggplot2::geom_line() +
+  ggplot2::geom_point() +
+  ggplot2::facet_wrap(~ Model) +
+  ggplot2::coord_equal() +
+  ggplot2::labs(
     title = "Calibration on the 2025 Temporal Test Set",
     x = "Mean predicted KSI probability",
     y = "Observed KSI proportion"
   ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold"),
-    panel.grid.minor = element_blank()
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::theme(
+    plot.title = ggplot2::element_text(face = "bold"),
+    panel.grid.minor = ggplot2::element_blank()
   )
 
-ggsave(
+ggplot2::ggsave(
   file.path(figure_dir, "Figure_Calibration_2025.png"),
   calibration_plot,
   width = 10,
@@ -203,7 +203,8 @@ ggsave(
 # ---- Threshold selected only from 2024 out-of-fold predictions -------------
 
 xgb_oof <- xgb_fit$pred %>%
-  arrange(rowIndex)
+  tibble::as_tibble() %>%
+  dplyr::arrange(rowIndex)
 
 if (nrow(xgb_oof) != nrow(model24) ||
     anyDuplicated(xgb_oof$rowIndex)) {
@@ -232,12 +233,12 @@ threshold_selection <- pROC::coords(
   transpose = FALSE
 ) %>%
   as.data.frame() %>%
-  as_tibble() %>%
-  slice(1)
+  tibble::as_tibble() %>%
+  dplyr::slice_head(n = 1)
 
 locked_threshold <- threshold_selection$threshold[[1]]
 
-predicted_2025 <- if_else(
+predicted_2025 <- dplyr::if_else(
   xgb_prob_2025 >= locked_threshold,
   1L,
   0L
@@ -263,7 +264,7 @@ FN <- sum(
     y25 == 1
 )
 
-threshold_metrics_2025 <- tibble(
+threshold_metrics_2025 <- tibble::tibble(
   Threshold = locked_threshold,
   TP = TP,
   TN = TN,
@@ -284,7 +285,7 @@ print(threshold_metrics_2025)
 
 # ---- Save outputs -----------------------------------------------------------
 
-temporal_predictions <- tibble(
+temporal_predictions <- tibble::tibble(
   collision_index = model25$collision_index,
   KSI_num = y25,
   Logistic = logit_prob_2025,
