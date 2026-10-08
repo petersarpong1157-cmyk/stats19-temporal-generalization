@@ -1,5 +1,7 @@
 # Temporal Generalization, Calibration, and Road-User Heterogeneity in STATS19 Injury-Severity Models
 
+[![R syntax check](https://github.com/petersarpong1157-cmyk/stats19-temporal-generalization/actions/workflows/r-syntax.yml/badge.svg)](https://github.com/petersarpong1157-cmyk/stats19-temporal-generalization/actions/workflows/r-syntax.yml)
+
 Reproducible R analysis for a manuscript studying casualty-level killed-or-seriously-injured (KSI) prediction in Great Britain using final 2024 and 2025 Department for Transport STATS19 data.
 
 ## Research question
@@ -113,7 +115,7 @@ The complete workflow has been clean-run verified end to end from the six raw ST
 
 The source CSV schemas, record counts, linkage keys, outcome counts, temporal category compatibility, selected data-guide coding decisions, model-development workflow, temporal validation, subgroup analyses, SHAP calculations, bootstrap uncertainty analysis, and final-output generation have been checked against the exact files used to develop the manuscript.
 
-See **[AUDIT.md](AUDIT.md)** for the audit record.
+See **[AUDIT.md](AUDIT.md)** for the audit record, **[REPRODUCIBILITY_CHECKLIST.md](REPRODUCIBILITY_CHECKLIST.md)** for the clean-run checks, **[session/VERIFIED_ENVIRONMENT.md](session/VERIFIED_ENVIRONMENT.md)** for the verified R environment, and **[RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)** for the remaining pre-release decisions.
 
 The audit found and corrected one repository schema error before release preparation: the current 2024/2025 collision files use `pedestrian_crossing`, not `pedestrian_crossing_physical_facilities`. The import now also forces `collision_index` to character to avoid inconsistent key inference across readers.
 
